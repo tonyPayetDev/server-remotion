@@ -11,9 +11,9 @@ export const MyVideo: React.FC = () => {
         Bienvenue dans ma vidéo ! 🎬
       </h1>
       {/* Tu peux ajouter une image */}
-      <Img src="https://url-de-ton-image.jpg" width={500} height={500} />
+      <Img src="./1zSJDc8Asghswj9wNQzV3.png" width={500} height={500} />
       {/* Ou ajouter de l'audio */}
-      <Audio src="https://url-de-ton-audio.mp3" startFrom={0} />
+      <Audio src="./Design-sans-titre-_9_.mp3" startFrom={0} />
     </div>
   );
 };
