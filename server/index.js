@@ -39,6 +39,7 @@ app.post('/api/render', async (req, res) => {
       throw new Error('Aucune composition trouvée dans Remotion. Vérifiez remotionEntry.tsx');
     }
 
+    // Définir un nom de fichier unique pour éviter les conflits
     const outputPath = join(tmpdir(), `${Date.now()}.mp4`);
     console.log('🎥 Début du rendu vidéo...');
 
@@ -56,9 +57,13 @@ app.post('/api/render', async (req, res) => {
 
     console.log('✔️ Rendu terminé. Lecture du fichier...');
     const video = await readFile(outputPath);
+
+    // Envoie du fichier vidéo avec un nom de fichier pour le téléchargement
     res.setHeader('Content-Type', 'video/mp4');
+    res.setHeader('Content-Disposition', 'attachment; filename="video.mp4"');
     res.send(video);
 
+    // Supprimer le fichier temporaire après l'envoi
     await unlink(outputPath);
     console.log('🗑️ Fichier temporaire supprimé.');
   } catch (error) {
