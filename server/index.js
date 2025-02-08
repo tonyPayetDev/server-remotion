@@ -4,9 +4,11 @@ import { getCompositions, renderMedia } from '@remotion/renderer';
 import { join } from 'path';
 import { tmpdir } from 'os';
 import { readFile, unlink } from 'fs/promises';
+import cors from 'cors';
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 const execPath = '/usr/bin/google-chrome';
 
