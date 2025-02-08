@@ -15,8 +15,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const execPath = '/usr/bin/google-chrome';
-
+const execPath = '/usr/bin/chromium-browser;
 let bundled = null;
 let compositions = null;
 
