@@ -5,6 +5,11 @@ import { getCompositions, renderMedia } from '@remotion/renderer';
 import { join } from 'path';
 import { tmpdir } from 'os';
 import { readFile, unlink } from 'fs/promises';
+import { fileURLToPath } from 'url';
+
+// Définition de __dirname pour modules ES
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = join(__filename, '..');
 
 const app = express();
 app.use(express.json());
