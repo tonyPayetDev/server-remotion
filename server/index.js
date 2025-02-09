@@ -6,6 +6,7 @@ import { join } from 'path';
 import { tmpdir } from 'os';
 import { readFile, unlink } from 'fs/promises';
 import { fileURLToPath } from 'url';
+import puppeteer from 'puppeteer'; // Importation de Puppeteer
 
 // Définition de __dirname pour modules ES
 const __filename = fileURLToPath(import.meta.url);
@@ -45,6 +46,12 @@ app.post('/api/render', async (req, res) => {
     const outputPath = join(tmpdir(), `${Date.now()}.mp4`);
     console.log('🎥 Début du rendu vidéo...');
 
+    // Utiliser Puppeteer pour démarrer un navigateur
+    const browser = await puppeteer.launch({
+      executablePath: execPath, // Utilise le chemin vers Chromium
+      args: ['--no-sandbox', '--disable-setuid-sandbox'], // Désactive les restrictions de sécurité
+    });
+
     await renderMedia({
       composition: compositions[0],
       serveUrl: bundled,
@@ -53,8 +60,8 @@ app.post('/api/render', async (req, res) => {
       inputProps: req.body,
       durationInFrames: req.body.duration * 30,
       fps: 30,
-      executablePath: execPath, // Chemin vers Chromium
-      chromiumOptions: { noSandbox: true, disableWebSecurity: true, headless: true },
+      executablePath: execPath, // Path vers Chromium
+      chromiumOptions: { noSandbox: true, disableWebSecurity: true, headless: true, browser }, // Passer l'instance de browser
     });
 
     console.log('✔️ Rendu terminé. Lecture du fichier...');
@@ -68,6 +75,10 @@ app.post('/api/render', async (req, res) => {
     // Supprimer le fichier temporaire après l'envoi
     await unlink(outputPath);
     console.log('🗑️ Fichier temporaire supprimé.');
+    
+    // Fermer le navigateur Puppeteer
+    await browser.close();
+
   } catch (error) {
     console.error('❌ Erreur lors du rendu vidéo :', error);
     res.status(500).json({ error: error.message || 'Failed to render video' });
