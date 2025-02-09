@@ -1,19 +1,20 @@
 {
-  "name": "remotion-api",
+  "name": "video-rendering-server",
   "version": "1.0.0",
-  "main": "server/index.js",
+  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "start": "node server/index.js"
+    "start": "node index.js"
   },
   "dependencies": {
-    "@remotion/bundler": "^4.0.260",
-    "express": "^4.18.2",
-    "remotion": "^4.0.0",
+    "express": "^4.17.1",
     "cors": "^2.8.5",
-    "puppeteer": "^19.0.0"
+    "@remotion/renderer": "^5.0.0",
+    "@remotion/bundler": "^5.0.0",
+    "puppeteer": "^22.0.0"
   },
+  "devDependencies": {},
   "engines": {
-    "node": ">=16"
-  },
-  "type": "module"
+    "node": ">=14.0.0"
+  }
 }
