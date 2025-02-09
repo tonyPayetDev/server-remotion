@@ -11,6 +11,7 @@ import puppeteer from 'puppeteer'; // Importation de Puppeteer
 // Définition de __dirname pour modules ES
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = join(__filename, '..');
+process.env.PUPPETEER_SKIP_CHROMIUM_DOWNLOAD = 'true';
 
 // Définir la variable d'environnement PUPPETEER_SKIP_DOWNLOAD pour éviter le téléchargement de Chromium
 process.env.PUPPETEER_SKIP_DOWNLOAD = 'true'; // Empêche Puppeteer de télécharger Chrome
