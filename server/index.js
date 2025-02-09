@@ -11,11 +11,14 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = join(__filename, '..');
 
+// Définir la variable d'environnement PUPPETEER_SKIP_DOWNLOAD pour éviter le téléchargement de Chromium
+process.env.PUPPETEER_SKIP_DOWNLOAD = 'true'; // Empêche Puppeteer de télécharger Chrome
+
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-const execPath = '/usr/bin/chromium-browser';
+const execPath = '/usr/bin/chromium-browser'; // Spécifie le chemin vers ton installation de Chromium
 let bundled = null;
 let compositions = null;
 
@@ -50,7 +53,7 @@ app.post('/api/render', async (req, res) => {
       inputProps: req.body,
       durationInFrames: req.body.duration * 30,
       fps: 30,
-      executablePath: execPath,
+      executablePath: execPath, // Chemin vers Chromium
       chromiumOptions: { noSandbox: true, disableWebSecurity: true, headless: true },
     });
 
