@@ -13,46 +13,36 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = join(__filename, '..');
 process.env.PUPPETEER_SKIP_CHROMIUM_DOWNLOAD = 'true';
 
-// Définir la variable d'environnement PUPPETEER_SKIP_DOWNLOAD pour éviter le téléchargement de Chromium
-process.env.PUPPETEER_SKIP_DOWNLOAD = 'true'; // Empêche Puppeteer de télécharger Chrome
-
 const app = express();
 app.use(express.json());
 app.use(cors());
 
 const execPath = '/usr/bin/chromium-browser'; // Spécifie le chemin vers ton installation de Chromium
-let bundled = null;
-let compositions = null;
 
+// Endpoint pour générer la vidéo
 app.post('/api/render', async (req, res) => {
   try {
     console.log('✅ API appelée avec :', req.body);
 
-    if (!bundled) {
-      console.log('📦 Bundling Remotion project...');
-      bundled = await bundle(join(__dirname, '../src/remotionEntry.tsx'));
-    }
-
-    if (!compositions) {
-      console.log('🎬 Récupération des compositions...');
-      compositions = await getCompositions(bundled);
-      console.log('✔️ Compositions disponibles :', compositions);
-    }
-
+    // Bundle Remotion project et récupère les compositions
+    const bundled = await bundle(join(__dirname, '../src/remotionEntry.tsx'));
+    const compositions = await getCompositions(bundled);
+    
     if (!compositions.length) {
-      throw new Error('Aucune composition trouvée dans Remotion. Vérifiez remotionEntry.tsx');
+      return res.status(400).json({ error: 'Aucune composition trouvée dans Remotion. Vérifiez remotionEntry.tsx' });
     }
 
     // Définir un nom de fichier unique pour éviter les conflits
     const outputPath = join(tmpdir(), `${Date.now()}.mp4`);
     console.log('🎥 Début du rendu vidéo...');
 
-    // Utiliser Puppeteer pour démarrer un navigateur
+    // Lancer Puppeteer
     const browser = await puppeteer.launch({
-      executablePath: execPath, // Utilise le chemin vers Chromium
-      args: ['--no-sandbox', '--disable-setuid-sandbox'], // Désactive les restrictions de sécurité
+      executablePath: execPath, 
+      args: ['--no-sandbox', '--disable-setuid-sandbox'], // Désactiver les restrictions de sécurité
     });
 
+    // Rendu vidéo avec Remotion et Puppeteer
     await renderMedia({
       composition: compositions[0],
       serveUrl: bundled,
@@ -61,8 +51,8 @@ app.post('/api/render', async (req, res) => {
       inputProps: req.body,
       durationInFrames: req.body.duration * 30,
       fps: 30,
-      executablePath: execPath, // Path vers Chromium
-      chromiumOptions: { noSandbox: true, disableWebSecurity: true, headless: true, browser }, // Passer l'instance de browser
+      executablePath: execPath,
+      chromiumOptions: { noSandbox: true, disableWebSecurity: true, headless: true, browser }, 
     });
 
     console.log('✔️ Rendu terminé. Lecture du fichier...');
@@ -79,12 +69,12 @@ app.post('/api/render', async (req, res) => {
     
     // Fermer le navigateur Puppeteer
     await browser.close();
-
   } catch (error) {
     console.error('❌ Erreur lors du rendu vidéo :', error);
-    res.status(500).json({ error: error.message || 'Failed to render video' });
+    res.status(500).json({ error: error.message || 'Échec du rendu vidéo' });
   }
 });
 
+// Démarrer le serveur sur le port 3000 ou port d'environnement
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Serveur sur http://localhost:${PORT}`));
