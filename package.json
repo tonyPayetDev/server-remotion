@@ -4,16 +4,21 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js",  // Ajout d'un script pour développement avec nodemon (si nécessaire)
+    "build": "echo 'No build step required.'"  // Placeholder pour un futur script de build
   },
   "dependencies": {
     "express": "^4.17.1",
     "cors": "^2.8.5",
     "@remotion/renderer": "^5.0.0",
     "@remotion/bundler": "^5.0.0",
-    "puppeteer": "^22.0.0"
+    "puppeteer": "^22.0.0",  // Mise à jour vers une version plus récente si possible
+    "dotenv": "^10.0.0"  // Ajout de dotenv pour les variables d'environnement
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "nodemon": "^2.0.20"  // Optionnel, pour un rechargement automatique en développement
+  },
   "engines": {
     "node": ">=14.0.0"
   }
