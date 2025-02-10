@@ -18,7 +18,16 @@ app.use(express.json());
 app.use(cors());
 
 const execPath = '/usr/bin/chromium-browser'; // Spécifie le chemin vers ton installation de Chromium
+app.get("/render-video", (req, res) => {
+  const command = "npx remotion render src/index.tsx MyVideo out/video.mp4";
 
+  exec(command, { cwd: path.join(__dirname, "..") }, (error, stdout, stderr) => {
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+    res.json({ message: "Vidéo générée avec succès !", output: stdout });
+  });
+});
 // Endpoint pour générer la vidéo
 app.post('/api/render', async (req, res) => {
   try {
