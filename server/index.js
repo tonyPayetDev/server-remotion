@@ -19,7 +19,7 @@ app.use(cors());
 
 const execPath = '/usr/bin/chromium-browser'; // Spécifie le chemin vers ton installation de Chromium
 app.get("/render-video", (req, res) => {
-  const command = "npx remotion render src/index.tsx MyVideo out/video.mp4";
+  const command = "npx remotion render src/remotionEntry.tsx MyVideo out/video.mp4";
 
   exec(command, { cwd: path.join(__dirname, "..") }, (error, stdout, stderr) => {
     if (error) {
